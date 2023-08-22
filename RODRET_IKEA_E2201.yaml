@@ -1,6 +1,6 @@
 blueprint:
   name: IKEA Rodret Dimmer Light Control (Zigbee2MQTT)
-  description: '## Control Light with IKEA RODRET Dimmer remote (v1.0)
+  description: '## Control Light with IKEA RODRET Dimmer controller_entity (v1.0)
 
 
     Only for use with [Zigbee2MQTT](https://www.zigbee2mqtt.io/guide/usage/integrations/home_assistant.html/).
@@ -18,10 +18,13 @@ blueprint:
     - Press and hold the ''off'' button to decrease the brightness down to 1% '
   domain: automation
   input:
-    remote:
-      name: Remote
-      description: IKEA remote to use
+    controller_entity:
+      name: (Zigbee2MQTT) Controller Entity
+      description: The action sensor of the controller to use for the automation. Choose a value only if the controller_entity is integrated with Zigbee2MQTT.
+      default: ''
       selector:
+        entity:
+          domain: sensor
         device:
           integration: zigbee2mqtt
           manufacturer: IKEA of Sweden
@@ -60,7 +63,7 @@ trigger:
 - platform: event
   event_type: state_changed
   event_data:
-    device_id: !input remote
+    device_id: !input controller_entity
     command: 'on'
     cluster_id: 6
     endpoint_id: 1
@@ -68,7 +71,7 @@ trigger:
 - platform: event
   event_type: state_changed
   event_data:
-    device_id: !input remote
+    device_id: !input controller_entity
     command: 'off'
     cluster_id: 6
     endpoint_id: 1
@@ -76,7 +79,7 @@ trigger:
 - platform: event
   event_type: state_changed
   event_data:
-    device_id: !input remote
+    device_id: !input controller_entity
     command: brightness_move_up
     cluster_id: 8
     endpoint_id: 1
@@ -87,7 +90,7 @@ trigger:
 - platform: event
   event_type: state_changed
   event_data:
-    device_id: !input remote
+    device_id: !input controller_entity
     command: brightness_move_down
     cluster_id: 8
     endpoint_id: 1
@@ -100,7 +103,7 @@ trigger:
 - platform: event
   event_type: state_changed
   event_data:
-    device_id: !input remote
+    device_id: !input controller_entity
     endpoint_id: 1
     cluster_id: 8
     command: brightness_stop

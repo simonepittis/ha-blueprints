@@ -1,3 +1,5 @@
+NOTE! TEST MODE
+
 # ha-blueprints
 Home Assistant Blueprints
 

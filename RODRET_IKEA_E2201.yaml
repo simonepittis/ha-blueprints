@@ -53,21 +53,14 @@ blueprint:
           max: 100.0
           step: 1.0
           mode: slider
-    controller_entity:
-      name: (Zigbee2MQTT) Controller Entity
-      description: The action sensor of the controller to use for the automation. Choose a value only if the remote is integrated with Zigbee2MQTT.
-      default: ''
-      selector:
-        entity:
-          domain: sensor
-  source_url: https://github.com/simonepittis/ha-blueprints/raw/main/RODRET_IKEA_E2201.yaml
+  source_url: https://github.com/simonepittis/ha-blueprints/blob/main/RODRET_IKEA_E2201.yaml
 mode: restart
 max_exceeded: silent
 trigger:
 - platform: event
   event_type: state_changed
   event_data:
-    device_id: !input controller_entity
+    device_id: !input remote
     command: 'on'
     cluster_id: 6
     endpoint_id: 1
@@ -75,7 +68,7 @@ trigger:
 - platform: event
   event_type: state_changed
   event_data:
-    device_id: !input controller_entity
+    device_id: !input remote
     command: 'off'
     cluster_id: 6
     endpoint_id: 1
@@ -83,7 +76,7 @@ trigger:
 - platform: event
   event_type: state_changed
   event_data:
-    device_id: !input controller_entity
+    device_id: !input remote
     command: brightness_move_up
     cluster_id: 8
     endpoint_id: 1
@@ -94,7 +87,7 @@ trigger:
 - platform: event
   event_type: state_changed
   event_data:
-    device_id: !input controller_entity
+    device_id: !input remote
     command: brightness_move_down
     cluster_id: 8
     endpoint_id: 1
@@ -107,7 +100,7 @@ trigger:
 - platform: event
   event_type: state_changed
   event_data:
-    device_id: !input controller_entity
+    device_id: !input remote
     endpoint_id: 1
     cluster_id: 8
     command: brightness_stop

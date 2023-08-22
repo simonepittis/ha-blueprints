@@ -58,53 +58,35 @@ blueprint:
 mode: restart
 max_exceeded: silent
 trigger:
-- platform: event
-  event_type: state_changed
-  event_data:
-    device_id: !input controller_entity
-    command: 'on'
-    cluster_id: 6
-    endpoint_id: 1
+- platform: device
+  type: action
+  domain: mqtt
+  device_id: !input controller_entity
+  subtype: 'on'
   id: press-on
-- platform: event
-  event_type: state_changed
-  event_data:
-    device_id: !input controller_entity
-    command: 'off'
-    cluster_id: 6
-    endpoint_id: 1
+- platform: device
+  type: action
+  domain: mqtt
+  device_id: !input controller_entity
+  subtype: 'off'
   id: press-off
-- platform: event
-  event_type: state_changed
-  event_data:
-    device_id: !input controller_entity
-    command: brightness_move_up
-    cluster_id: 8
-    endpoint_id: 1
-    args:
-    - 0
-    - 83
+- platform: device
+  type: action
+  domain: mqtt
+  device_id: !input controller_entity
+  subtype: brightness_move_up
   id: hold-on
-- platform: event
-  event_type: state_changed
-  event_data:
-    device_id: !input controller_entity
-    command: brightness_move_down
-    cluster_id: 8
-    endpoint_id: 1
-    args:
-    - 1
-    - 83
-    - 0
-    - 0
+- platform: device
+  type: action
+  domain: mqtt
+  device_id: !input controller_entity
+  subtype: brightness_move_down
   id: hold-off
-- platform: event
-  event_type: state_changed
-  event_data:
-    device_id: !input controller_entity
-    endpoint_id: 1
-    cluster_id: 8
-    command: brightness_stop
+- platform: device
+  type: action
+  domain: mqtt
+  device_id: !input controller_entity
+  subtype: brightness_stop
   id: release
 action:
 - variables:

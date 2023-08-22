@@ -23,8 +23,11 @@ blueprint:
       description: The action sensor of the controller to use for the automation. Choose a value only if the controller_entity is integrated with Zigbee2MQTT.
       default: ''
       selector:
-        entity:
-          domain: sensor
+        device:
+          integration: mqtt
+          manufacturer: IKEA
+          model: RODRET wireless dimmer/power switch (E2201)
+          multiple: false
     light:
       name: Light
       description: Light to control

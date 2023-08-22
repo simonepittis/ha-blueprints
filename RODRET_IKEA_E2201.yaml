@@ -63,30 +63,35 @@ trigger:
   domain: mqtt
   device_id: !input controller_entity
   subtype: 'on'
+  discovery_id: {{ (device_attr("!input controller_entity", "identifiers")|list).0.1[12:] }} action_on
   id: press-on
 - platform: device
   type: action
   domain: mqtt
   device_id: !input controller_entity
   subtype: 'off'
+  discovery_id: {{ (device_attr("!input controller_entity", "identifiers")|list).0.1[12:] }} action_off
   id: press-off
 - platform: device
   type: action
   domain: mqtt
   device_id: !input controller_entity
   subtype: brightness_move_up
+  discovery_id: {{ (device_attr("!input controller_entity", "identifiers")|list).0.1[12:] }} action_brightness_move_up
   id: hold-on
 - platform: device
   type: action
   domain: mqtt
   device_id: !input controller_entity
   subtype: brightness_move_down
+  discovery_id: {{ (device_attr("!input controller_entity", "identifiers")|list).0.1[12:] }} action_brightness_move_down
   id: hold-off
 - platform: device
   type: action
   domain: mqtt
   device_id: !input controller_entity
   subtype: brightness_stop
+  discovery_id: {{ (device_attr("!input controller_entity", "identifiers")|list).0.1[12:] }} action_brightness_stop
   id: release
 action:
 - variables:

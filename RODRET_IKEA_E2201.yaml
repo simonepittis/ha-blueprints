@@ -53,6 +53,13 @@ blueprint:
           max: 100.0
           step: 1.0
           mode: slider
+    controller_entity:
+      name: (Zigbee2MQTT) Controller Entity
+      description: The action sensor of the controller to use for the automation. Choose a value only if the remote is integrated with Zigbee2MQTT.
+      default: ''
+      selector:
+        entity:
+          domain: sensor
   source_url: https://github.com/simonepittis/ha-blueprints/raw/main/RODRET_IKEA_E2201.yaml
 mode: restart
 max_exceeded: silent

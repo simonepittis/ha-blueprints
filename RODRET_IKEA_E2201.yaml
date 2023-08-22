@@ -1,0 +1,183 @@
+blueprint:
+  name: IKEA Rodret Dimmer Light Control (ZHA)
+  description: '## Control Light with IKEA RODRET Dimmer remote (v1.0)
+
+
+    Only for use with [Zigbee2MQTT](https://www.zigbee2mqtt.io/guide/usage/integrations/home_assistant.html/).
+
+
+    Available controls:
+
+    - Press the ''on'' button to turn on the light (Optional: set the target brightness
+    by enabling **Force Brightness** helper and setting a **Brightness** value)
+
+    - Press the ''off'' button to turn off the light
+
+    - Press and hold the ''on'' button to increase the brightness
+
+    - Press and hold the ''off'' button to decrease the brightness down to 1% '
+  domain: automation
+  input:
+    remote:
+      name: Remote
+      description: IKEA remote to use
+      selector:
+        device:
+          integration: zigbee2mqtt
+          manufacturer: IKEA of Sweden
+          model: RODRET Dimmer
+          multiple: false
+    light:
+      name: Light
+      description: Light to control
+      selector:
+        entity:
+          domain:
+          - light
+          multiple: false
+    helper_force_brightness:
+      name: Helper - Force brightness
+      description: Force the brightness to value below when light turns on.
+      default: false
+      selector:
+        boolean: {}
+    helper_brightness:
+      name: Helper - Brightness
+      description: Light brightness when turning on. Requires **Helper - Force brightness**
+        to be enabled.
+      default: 50
+      selector:
+        number:
+          unit_of_measurement: '%'
+          min: 1.0
+          max: 100.0
+          step: 1.0
+          mode: slider
+  source_url: https://community.home-assistant.io/t/ikea-rodret-dimmer-remote-e2201-zha-control-light/591182
+mode: restart
+max_exceeded: silent
+trigger:
+- platform: event
+  event_type: state_changed
+  event_data:
+    device_id: !input controller_entity
+    command: 'on'
+    cluster_id: 6
+    endpoint_id: 1
+  id: press-on
+- platform: event
+  event_type: state_changed
+  event_data:
+    device_id: !input controller_entity
+    command: 'off'
+    cluster_id: 6
+    endpoint_id: 1
+  id: press-off
+- platform: event
+  event_type: state_changed
+  event_data:
+    device_id: !input controller_entity
+    command: brightness_move_up
+    cluster_id: 8
+    endpoint_id: 1
+    args:
+    - 0
+    - 83
+  id: hold-on
+- platform: event
+  event_type: state_changed
+  event_data:
+    device_id: !input controller_entity
+    command: brightness_move_down
+    cluster_id: 8
+    endpoint_id: 1
+    args:
+    - 1
+    - 83
+    - 0
+    - 0
+  id: hold-off
+- platform: event
+  event_type: state_changed
+  event_data:
+    device_id: !input controller_entity
+    endpoint_id: 1
+    cluster_id: 8
+    command: brightness_stop
+  id: release
+action:
+- variables:
+    helper_force_brightness: !input helper_force_brightness
+    hold_delay: 0.05
+    hold_dim_step: 5
+    light: !input light
+- choose:
+  - conditions:
+    - condition: trigger
+      id:
+      - press-on
+    sequence:
+    - choose:
+      - conditions: '{{ helper_force_brightness }}'
+        sequence:
+        - service: light.turn_on
+          target:
+            entity_id: !input light
+          data:
+            transition: 1
+            brightness_pct: !input helper_brightness
+      default:
+      - service: light.turn_on
+        target:
+          entity_id: !input light
+        data:
+          transition: 1
+  - conditions:
+    - condition: trigger
+      id:
+      - press-off
+    sequence:
+    - service: light.turn_off
+      target:
+        entity_id: !input light
+      data:
+        transition: 1
+  - conditions:
+    - condition: trigger
+      id:
+      - hold-on
+    sequence:
+    - repeat:
+        while:
+        - condition: trigger
+          id:
+          - hold-on
+        sequence:
+        - service: light.turn_on
+          target:
+            entity_id: !input light
+          data:
+            brightness_step_pct: '{{ hold_dim_step }}'
+        - delay: '{{ hold_delay }}'
+  - conditions:
+    - condition: trigger
+      id:
+      - hold-off
+    sequence:
+    - repeat:
+        while:
+        - condition: template
+          value_template: '{{ state_attr(light, ''brightness'') | int / 255 > hold_dim_step/100
+            }}'
+        sequence:
+        - service: light.turn_on
+          data:
+            brightness_step_pct: '{{ hold_dim_step | int * -1 }}'
+          target:
+            entity_id: !input light
+        - delay: '{{ hold_delay }}'
+    - service: light.turn_on
+      data:
+        brightness_pct: 1
+      target:
+        entity_id: !input light

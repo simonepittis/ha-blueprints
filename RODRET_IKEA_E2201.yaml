@@ -25,11 +25,6 @@ blueprint:
       selector:
         entity:
           domain: sensor
-        device:
-          integration: zigbee2mqtt
-          manufacturer: IKEA of Sweden
-          model: RODRET Dimmer
-          multiple: false
     light:
       name: Light
       description: Light to control

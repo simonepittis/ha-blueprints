@@ -53,7 +53,7 @@ blueprint:
           max: 100.0
           step: 1.0
           mode: slider
-  source_url: https://community.home-assistant.io/t/ikea-rodret-dimmer-remote-e2201-zha-control-light/591182
+  source_url: https://github.com/simonepittis/ha-blueprints/raw/main/RODRET_IKEA_E2201.yaml
 mode: restart
 max_exceeded: silent
 trigger:

@@ -1,20 +1,20 @@
 blueprint:
   name: IKEA Rodret Dimmer Light Control (Zigbee2MQTT)
   description: '## Control Light with IKEA RODRET Dimmer controller_entity (v1.0)
-
+  
 
     Only for use with [Zigbee2MQTT](https://www.zigbee2mqtt.io/guide/usage/integrations/home_assistant.html/).
 
-
+  
     Available controls:
 
     - Press the ''on'' button to turn on the light (Optional: set the target brightness
     by enabling **Force Brightness** helper and setting a **Brightness** value)
-
+  
     - Press the ''off'' button to turn off the light
-
+  
     - Press and hold the ''on'' button to increase the brightness
-
+  
     - Press and hold the ''off'' button to decrease the brightness down to 1% '
   domain: automation
   input:
@@ -23,10 +23,8 @@ blueprint:
       description: The action sensor of the controller to use for the automation. Choose a value only if the controller_entity is integrated with Zigbee2MQTT.
       default: ''
       selector:
-        device:
-          integration: mqtt
-          manufacturer: IKEA
-          model: RODRET wireless dimmer/power switch (E2201)
+        entity:
+          domain: sensor
           multiple: false
     light:
       name: Light
@@ -42,7 +40,7 @@ blueprint:
       default: false
       selector:
         boolean: {}
-    helper_brightness:
+    helper_brightness: 
       name: Helper - Brightness
       description: Light brightness when turning on. Requires **Helper - Force brightness**
         to be enabled.
@@ -92,7 +90,7 @@ trigger:
   device_id: !input controller_entity
   subtype: brightness_stop
   discovery_id: action_brightness_stop
-  id: release
+  id: releasev
 action:
 - variables:
     helper_force_brightness: !input helper_force_brightness
